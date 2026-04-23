@@ -3,42 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <title>Chapeco HMS</title>
+    <!-- Include SheetJS for Excel and jsPDF for PDF exports -->
+    <script src="https://cloudflare.com"></script>
+    <script src="https://cloudflare.com"></script>
+    <script src="https://cloudflare.com"></script>
     <style>
         :root { --primary: #2c3e50; --accent: #3498db; --success: #27ae60; --bg: #f4f7f6; }
         body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--bg); display: flex; height: 100vh; overflow: hidden; }
         
-        /* 1. Login Portal - Fixed & Highest Priority */
+        /* 1. Login Portal Fixed */
         #login-overlay { 
             position: fixed; inset: 0; background: var(--primary); 
             display: flex; justify-content: center; align-items: center; z-index: 10000; 
         }
-        .login-box { background: white; padding: 3rem; border-radius: 12px; text-align: center; width: 350px; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+        .login-box { background: white; padding: 2.5rem; border-radius: 12px; text-align: center; width: 350px; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+        .login-box input { width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
 
-        /* Sidebar & Layout */
         #sidebar { width: 240px; background: var(--primary); color: white; display: none; flex-direction: column; }
         #main-content { flex: 1; display: none; overflow-y: auto; padding: 25px; box-sizing: border-box; }
         .menu-item { padding: 15px 25px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.1); }
         .menu-item:hover { background: #34495e; }
         .submenu { padding-left: 30px; background: #1a252f; display: none; }
 
-        /* Registration: Horizontal Spread */
-        .form-row { 
-            display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 15px; 
-            background: white; padding: 20px; border-radius: 8px; border: 1px solid #ddd;
-        }
+        /* Registration Layout */
+        .form-row { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 15px; background: white; padding: 20px; border-radius: 8px; border: 1px solid #ddd; }
         .field-group { flex: 1; min-width: 180px; }
-        label { display: block; font-weight: 600; margin-bottom: 5px; font-size: 0.85rem; color: #555; }
+        .hidden-field { display: none; }
+        
+        label { display: block; font-weight: 600; margin-bottom: 5px; font-size: 0.85rem; }
         input, select, textarea { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
         
-        /* Buttons */
-        button { padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
-        .btn-save { background: var(--accent); color: white; opacity: 0.4; pointer-events: none; }
+        button { padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin-right: 10px; }
+        .btn-save { background: var(--accent); color: white; }
         .btn-send { background: var(--success); color: white; opacity: 0.4; pointer-events: none; }
         .active { opacity: 1 !important; pointer-events: auto !important; }
 
-        /* View-Only Panels */
-        .view-panel { background: #fff9c4; padding: 15px; border: 1px solid #fbc02d; border-radius: 6px; margin-bottom: 15px; font-size: 0.9rem; line-height: 1.6; }
-        
+        .view-panel { background: #fff9c4; padding: 15px; border: 1px solid #fbc02d; border-radius: 6px; margin-bottom: 15px; font-size: 0.9rem; }
         table { width: 100%; border-collapse: collapse; margin-top: 15px; background: white; }
         th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
         .active-link { color: var(--accent); cursor: pointer; font-weight: bold; text-decoration: underline; }
@@ -49,9 +49,11 @@
 <!-- Login -->
 <div id="login-overlay">
     <div class="login-box">
-        <h1 style="margin:0 0 10px 0; color: var(--primary)">Chapeco HMS</h1>
-        <p>Hospital Management System</p>
-        <button onclick="doLogin()" style="width:100%; background:var(--accent); color:white; font-size:1rem;">LOGIN</button>
+        <h1 style="color: var(--primary)">Chapeco HMS</h1>
+        <input type="text" placeholder="Username (Optional)">
+        <input type="password" placeholder="Password (Optional)">
+        <button onclick="doLogin()" style="width:100%; background:var(--accent); color:white;">LOGIN</button>
+        <p style="font-size:0.8rem; margin-top:10px; cursor:pointer" onclick="alert('Contact Admin')">Forgot Password?</p>
     </div>
 </div>
 
@@ -74,69 +76,99 @@
 <main id="main-content">
     <!-- Registration -->
     <div id="reg-page" class="page" style="display:block">
-        <h2>Patient Registration <button onclick="location.reload()" style="float:right; background:#eee; font-size:0.8rem; color:#333">New +</button></h2>
+        <h2>Registration <button onclick="resetForm()" style="float:right">+</button></h2>
         <div class="form-row">
-            <div class="field-group"><label>First Name *</label><input type="text" id="fn" oninput="valReg()"></div>
+            <div class="field-group"><label>First Name *</label><input type="text" id="fn"></div>
             <div class="field-group"><label>Middle Name</label><input type="text" id="mn"></div>
-            <div class="field-group"><label>Last Name *</label><input type="text" id="ln" oninput="valReg()"></div>
+            <div class="field-group"><label>Last Name *</label><input type="text" id="ln"></div>
             <div class="field-group"><label>ID Number</label><input type="text" id="rid"></div>
             <div class="field-group"><label>DOB</label><input type="date" id="dob" onchange="ageCalc()"></div>
             <div class="field-group"><label>Age</label><input type="text" id="age" readonly></div>
             <div class="field-group">
-                <label>Insurance *</label>
-                <select id="ins" onchange="valReg()">
-                    <option value="">Select...</option><option>SHA</option><option>Insurance</option><option>Cash</option>
+                <label>Insurance Type *</label>
+                <select id="ins" onchange="handlePaymentLogic()">
+                    <option value="">Select...</option>
+                    <option value="SHA">SHA</option>
+                    <option value="Insurance">Insurance</option>
+                    <option value="Cash">Cash</option>
                 </select>
             </div>
         </div>
-        <button id="reg-save" class="btn-save" onclick="this.nextElementSibling.classList.add('active')">Save</button>
+
+        <!-- Conditional Fields -->
+        <div class="form-row hidden-field" id="payment-details-row">
+            <div class="field-group" id="sha-box" style="display:none"><label>SHA Number</label><input type="text" id="v-sha"></div>
+            <div class="field-group" id="ins-box" style="display:none">
+                <label>Company</label>
+                <select id="v-co" onchange="document.getElementById('mem-box').style.display='block'">
+                    <option value="">Select...</option><option>CIC</option><option>APA</option><option>JUBILEE</option><option>MADISON</option>
+                </select>
+            </div>
+            <div class="field-group" id="mem-box" style="display:none"><label>Membership No</label><input type="text" id="v-mem"></div>
+            <div class="field-group" id="cash-box" style="display:none">
+                <label>Cash Provider</label>
+                <select id="v-cash" onchange="document.getElementById('mob-box').style.display='block'">
+                    <option value="">Select...</option><option>Mpesa</option><option>Airtel Money</option>
+                </select>
+            </div>
+            <div class="field-group" id="mob-box" style="display:none"><label>Mobile Number</label><input type="text" id="v-mob"></div>
+        </div>
+
+        <button class="btn-save" onclick="saveReg()">Save</button>
         <button id="reg-send" class="btn-send" onclick="sendToTri()">Send</button>
+        <table id="reg-history"><thead><tr><th>ID</th><th>Name</th><th>Status</th></tr></thead><tbody></tbody></table>
     </div>
 
-    <!-- Triage (View Registration Only) -->
+    <!-- Triage -->
     <div id="triage-page" class="page" style="display:none">
-        <h2>Triage Queue</h2>
+        <h2>Triage</h2>
         <table id="tri-table"><thead><tr><th>ID</th><th>Name</th><th>Age</th></tr></thead><tbody></tbody></table>
         <div id="tri-form" style="display:none; margin-top:20px">
-            <div class="view-panel" id="tri-reg-view"></div>
+            <div class="view-panel" id="tri-view"></div>
             <div class="form-row">
-                <div class="field-group"><label>BP *</label><input type="text" id="bp" oninput="valTri()"></div>
-                <div class="field-group"><label>Temperature *</label><input type="number" id="temp" oninput="valTri()"></div>
+                <div class="field-group"><label>BP *</label><input type="text" id="bp"></div>
+                <div class="field-group"><label>Temp *</label><input type="number" id="temp"></div>
             </div>
-            <button id="tri-save" class="btn-save" onclick="this.nextElementSibling.classList.add('active')">Save</button>
+            <button class="btn-save" onclick="document.getElementById('tri-send').classList.add('active')">Save</button>
             <button id="tri-send" class="btn-send" onclick="sendToDoc()">Send</button>
         </div>
     </div>
 
-    <!-- Doctor (View Reg & Triage Only) -->
+    <!-- Doctor -->
     <div id="doc-page" class="page" style="display:none">
-        <h2>Consultation List</h2>
+        <h2>Doctor Consultation</h2>
         <table id="doc-table"><thead><tr><th>ID</th><th>Name</th></tr></thead><tbody></tbody></table>
         <div id="doc-form" style="display:none; margin-top:20px">
-            <div class="view-panel" id="doc-history-view"></div>
+            <div class="view-panel" id="doc-view"></div>
             <div class="form-row">
-                <div class="field-group"><label>Symptoms *</label><textarea id="sym" oninput="valDoc()"></textarea></div>
-                <div class="field-group">
-                    <label>Recommendations</label>
-                    <select id="rec">
-                        <option value="">Select...</option><option>Laboratory</option><option>X-ray</option><option>CT Scan</option><option>MRI</option><option>Pharmacy</option>
-                    </select>
+                <div class="field-group"><label>Symptoms *</label><textarea id="sym"></textarea></div>
+                <div class="field-group"><label>Recommendations</label>
+                    <select id="rec"><option value="">None</option><option>Laboratory</option><option>X-ray</option><option>CT Scan</option><option>MRI</option><option>Pharmacy</option></select>
                 </div>
-                <div class="field-group"><label>Prescriptions *</label><textarea id="pre" oninput="valDoc()"></textarea></div>
+                <div class="field-group"><label>Prescriptions *</label><textarea id="pre"></textarea></div>
             </div>
-            <button id="doc-save" class="active" style="background:var(--accent); color:white" onclick="doDocSave()">Save</button>
+            <button class="btn-save active" onclick="doDocSave()">Save</button>
             <button id="doc-send" class="btn-send" onclick="doDocSend()">Send</button>
         </div>
     </div>
 
-    <!-- Tests (Receives Prescriptions) -->
+    <!-- Tests -->
     <div id="test-page" class="page" style="display:none">
         <h2 id="test-title">Tests</h2>
-        <div class="view-panel" id="test-note-view">No pending prescriptions.</div>
-        <div class="form-row">
-            <div class="field-group"><label>Upload Document/Result</label><input type="file"></div>
-        </div>
-        <button class="active" style="background:var(--success); color:white">Submit Results</button>
+        <div class="view-panel" id="test-view">No pending data.</div>
+        <div class="form-row"><div class="field-group"><label>Upload Document</label><input type="file"></div></div>
+        <button class="btn-save active" onclick="alert('Results Uploaded')">Submit Results</button>
+    </div>
+
+    <!-- Reports -->
+    <div id="reports-page" class="page" style="display:none">
+        <h2>Master Report</h2>
+        <button onclick="exportExcel()" style="background:#1d6f42; color:white">Download Excel</button>
+        <button onclick="exportPDF()" style="background:#e74c3c; color:white">Download PDF</button>
+        <table id="master-report-table">
+            <thead><tr><th>ID</th><th>Name</th><th>Age</th><th>Insurance</th><th>BP/Temp</th><th>Symptoms</th><th>Prescription</th></tr></thead>
+            <tbody></tbody>
+        </table>
     </div>
 </main>
 
@@ -155,103 +187,94 @@
         document.getElementById(id).style.display='block';
         if(t) {
             document.getElementById('test-title').innerText = t;
-            const pNote = patients.find(p => p.rec === t);
-            document.getElementById('test-note-view').innerText = pNote ? `Prescription Note: ${pNote.pre}` : "No specific data for this section.";
+            let data = patients.find(p => p.rec === t);
+            document.getElementById('test-view').innerText = data ? `Doctor's Note: ${data.pre}` : "No prescription found.";
         }
+        if(id === 'reports-page') updateReport();
     }
 
-    function toggleSub(id) { 
-        const s = document.getElementById(id);
-        s.style.display = s.style.display === 'block' ? 'none' : 'block';
-    }
+    function toggleSub(id) { let s = document.getElementById(id); s.style.display = s.style.display === 'block' ? 'none' : 'block'; }
 
-    // REGISTRATION
+    // REGISTRATION LOGIC
     function ageCalc() {
         let b = new Date(document.getElementById('dob').value);
         document.getElementById('age').value = new Date().getFullYear() - b.getFullYear();
-        valReg();
     }
 
-    function valReg() {
-        let ok = document.getElementById('fn').value && document.getElementById('ln').value && document.getElementById('ins').value;
-        document.getElementById('reg-save').classList.toggle('active', ok);
+    function handlePaymentLogic() {
+        let v = document.getElementById('ins').value;
+        document.getElementById('payment-details-row').style.display = v ? 'flex' : 'none';
+        ['sha-box','ins-box','mem-box','cash-box','mob-box'].forEach(id => document.getElementById(id).style.display = 'none');
+        if(v === 'SHA') document.getElementById('sha-box').style.display = 'block';
+        if(v === 'Insurance') document.getElementById('ins-box').style.display = 'block';
+        if(v === 'Cash') document.getElementById('cash-box').style.display = 'block';
     }
+
+    function saveReg() { document.getElementById('reg-send').classList.add('active'); alert("Saved"); }
 
     function sendToTri() {
         let p = { 
             id: document.getElementById('rid').value || 'N/A', 
-            name: `${document.getElementById('fn').value} ${document.getElementById('ln').value}`, 
+            name: document.getElementById('fn').value + ' ' + document.getElementById('ln').value,
             age: document.getElementById('age').value,
-            ins: document.getElementById('ins').value
+            ins: document.getElementById('ins').value,
+            pay_ref: document.getElementById('v-sha').value || document.getElementById('v-mem').value || document.getElementById('v-mob').value || '-'
         };
         patients.push(p);
         updateTriTbl();
-        alert("Patient Sent to Triage");
+        document.querySelector('#reg-history tbody').innerHTML += `<tr><td>${p.id}</td><td>${p.name}</td><td>Sent</td></tr>`;
     }
 
     function updateTriTbl() {
-        let b = document.querySelector('#tri-table tbody');
-        b.innerHTML = '';
-        patients.forEach((p, i) => {
-            if(!p.bp) b.innerHTML += `<tr><td>${p.id}</td><td class="active-link" onclick="openTri(${i})">${p.name}</td><td>${p.age}</td></tr>`;
-        });
+        let b = document.querySelector('#tri-table tbody'); b.innerHTML = '';
+        patients.forEach((p, i) => { if(!p.bp) b.innerHTML += `<tr><td>${p.id}</td><td class="active-link" onclick="openTri(${i})">${p.name}</td><td>${p.age}</td></tr>`; });
     }
 
-    // TRIAGE (View Mode Only)
     function openTri(i) {
         cur = patients[i];
-        document.getElementById('tri-reg-view').innerHTML = `<strong>Bio Data (View Only):</strong> ID: ${cur.id} | Name: ${cur.name} | Age: ${cur.age} | Insurance: ${cur.ins}`;
+        document.getElementById('tri-view').innerHTML = `<b>Read Only:</b> ID: ${cur.id} | Name: ${cur.name} | Pay: ${cur.ins} (${cur.pay_ref})`;
         document.getElementById('tri-form').style.display = 'block';
     }
 
-    function valTri() {
-        let ok = document.getElementById('bp').value && document.getElementById('temp').value;
-        document.getElementById('tri-save').classList.toggle('active', ok);
-    }
-
     function sendToDoc() {
-        cur.bp = document.getElementById('bp').value;
-        cur.temp = document.getElementById('temp').value;
-        updateDocTbl();
-        document.getElementById('tri-form').style.display = 'none';
-        alert("Sent to Doctor");
+        cur.bp = document.getElementById('bp').value; cur.temp = document.getElementById('temp').value;
+        updateDocTbl(); document.getElementById('tri-form').style.display = 'none';
     }
 
-    // DOCTOR (View Reg & Triage Only)
     function updateDocTbl() {
-        let b = document.querySelector('#doc-table tbody');
-        b.innerHTML = '';
-        patients.forEach((p, i) => {
-            if(p.bp && !p.pre) b.innerHTML += `<tr><td>${p.id}</td><td class="active-link" onclick="openDoc(${i})">${p.name}</td></tr>`;
-        });
+        let b = document.querySelector('#doc-table tbody'); b.innerHTML = '';
+        patients.forEach((p, i) => { if(p.bp && !p.pre) b.innerHTML += `<tr><td>${p.id}</td><td class="active-link" onclick="openDoc(${i})">${p.name}</td></tr>`; });
     }
 
     function openDoc(i) {
         cur = patients[i];
-        document.getElementById('doc-history-view').innerHTML = `
-            <strong>History (View Only):</strong><br>
-            Name: ${cur.name} | ID: ${cur.id} | Age: ${cur.age}<br>
-            Vitals: BP ${cur.bp} | Temp ${cur.temp} | Ins: ${cur.ins}`;
+        document.getElementById('doc-view').innerHTML = `<b>Read Only History:</b> ${cur.name} | BP: ${cur.bp} | Temp: ${cur.temp}°C | Pay: ${cur.ins}`;
         document.getElementById('doc-form').style.display = 'block';
     }
 
-    function valDoc() {
-        let ok = document.getElementById('sym').value && document.getElementById('pre').value;
-        // Save is always active per request, but send follows save.
+    function doDocSave() { cur.sym = document.getElementById('sym').value; cur.pre = document.getElementById('pre').value; cur.rec = document.getElementById('rec').value; document.getElementById('doc-send').classList.add('active'); alert("Saved"); }
+    
+    function doDocSend() { alert("Clinical Record Completed"); document.getElementById('doc-form').style.display='none'; updateDocTbl(); }
+
+    // REPORTING
+    function updateReport() {
+        let b = document.querySelector('#master-report-table tbody'); b.innerHTML = '';
+        patients.forEach(p => {
+            b.innerHTML += `<tr><td>${p.id}</td><td>${p.name}</td><td>${p.age}</td><td>${p.ins}</td><td>${p.bp || '-'}/${p.temp || '-'}</td><td>${p.sym || '-'}</td><td>${p.pre || '-'}</td></tr>`;
+        });
     }
 
-    function doDocSave() {
-        cur.sym = document.getElementById('sym').value;
-        cur.pre = document.getElementById('pre').value;
-        cur.rec = document.getElementById('rec').value;
-        document.getElementById('doc-send').classList.add('active');
-        alert("Clinical Record Saved");
+    function exportExcel() {
+        let wb = XLSX.utils.table_to_book(document.getElementById('master-report-table'));
+        XLSX.writeFile(wb, "Chapeco_HMS_Report.xlsx");
     }
 
-    function doDocSend() {
-        alert(`Record submitted to ${cur.rec || 'General Records'}`);
-        document.getElementById('doc-form').style.display = 'none';
-        updateDocTbl();
+    function exportPDF() {
+        const { jsPDF } = window.jspdf;
+        let doc = new jsPDF();
+        doc.text("Chapeco HMS Master Report", 14, 15);
+        doc.autoTable({ html: '#master-report-table', marginTop: 20 });
+        doc.save("Chapeco_HMS_Report.pdf");
     }
 </script>
 </body>
