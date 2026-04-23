@@ -5,52 +5,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chapeco HMS</title>
     <style>
-        :root { --primary: #2c3e50; --secondary: #34495e; --accent: #3498db; --white: #ffffff; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; display: flex; height: 100vh; background: #f4f7f6; overflow: hidden; }
+        :root { --primary: #2c3e50; --secondary: #34495e; --accent: #3498db; --success: #27ae60; --white: #ffffff; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; height: 100vh; background: #f4f7f6; overflow: hidden; }
         
-        /* Login Overlay */
-        #login-overlay { position: fixed; inset: 0; background: var(--primary); display: flex; justify-content: center; align-items: center; z-index: 1000; }
-        .login-box { background: white; padding: 2.5rem; border-radius: 12px; text-align: center; width: 320px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); }
-        
-        /* Layout */
-        #sidebar { width: 240px; background: var(--primary); color: white; display: none; flex-direction: column; height: 100vh; }
-        #main-content { flex-grow: 1; display: none; flex-direction: column; overflow-y: auto; height: 100vh; }
-        
-        /* Sidebar Menu */
-        .logo-area { padding: 25px; text-align: center; border-bottom: 1px solid var(--secondary); font-weight: bold; font-size: 1.3rem; color: var(--accent); }
-        .menu-item { padding: 15px 25px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.2s; }
+        /* Sidebar & Layout */
+        #sidebar { width: 240px; background: var(--primary); color: white; display: none; flex-direction: column; }
+        #main-content { flex-grow: 1; display: none; overflow-y: auto; padding: 30px; }
+        .menu-item { padding: 15px 25px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.05); }
         .menu-item:hover { background: var(--secondary); }
-        .submenu { padding-left: 40px; font-size: 0.9rem; background: #1a252f; display: none; }
+        .submenu { padding-left: 30px; background: #1a252f; display: none; }
 
-        /* Content Styles */
-        .page { padding: 40px; display: none; }
+        /* Pages & Components */
+        .page { display: none; }
         .active-page { display: block; }
-        .form-group { margin-bottom: 20px; max-width: 500px; }
-        label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--primary); }
-        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 1rem; }
-        button { background: var(--accent); color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; }
-        button:hover { opacity: 0.9; }
+        .form-group { margin-bottom: 15px; max-width: 500px; }
+        .hidden-field { display: none; margin-top: 10px; }
+        
+        label { display: block; margin-bottom: 5px; font-weight: 600; }
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        
+        /* Buttons */
+        .btn-row { display: flex; gap: 10px; margin-top: 20px; }
+        button { padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .btn-save { background: var(--accent); color: white; opacity: 0.5; cursor: not-allowed; }
+        .btn-send { background: var(--success); color: white; opacity: 0.5; cursor: not-allowed; }
+        .enabled { opacity: 1; cursor: pointer; }
+
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background: #eee; }
+        .active-link { color: var(--accent); cursor: pointer; text-decoration: underline; }
+        
+        #login-overlay { position: fixed; inset: 0; background: var(--primary); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+        .login-box { background: white; padding: 2rem; border-radius: 8px; text-align: center; }
     </style>
 </head>
 <body>
 
-<!-- Login Section -->
 <div id="login-overlay">
     <div class="login-box">
-        <div style="font-size: 2.5rem; margin-bottom: 10px;">🏥</div>
-        <h2 style="margin: 0 0 20px 0; color: var(--primary);">Chapeco HMS</h2>
-        <input type="text" placeholder="Username (Optional)" style="margin-bottom: 15px;">
-        <input type="password" placeholder="Password (Optional)" style="margin-bottom: 20px;">
-        <button id="login-btn">Login</button>
-        <p style="margin-top: 20px; font-size: 0.9rem;">
-            <a href="#" onclick="alert('Please contact IT Support at support@chapecohms.com')">Forgot Password?</a>
-        </p>
+        <h2>Chapeco HMS</h2>
+        <button onclick="handleLogin()" style="background:var(--accent); color:white; width:100%">Login</button>
     </div>
 </div>
 
-<!-- Main System Layout -->
 <nav id="sidebar">
-    <div class="logo-area">CHAPECO HMS</div>
+    <div style="padding:20px; font-weight:bold; color:var(--accent)">CHAPECO HMS</div>
     <div class="menu-item" onclick="showPage('reg-page')">Registration</div>
     <div class="menu-item" onclick="showPage('triage-page')">Triage</div>
     <div class="menu-item" onclick="showPage('doc-page')">Doctor</div>
@@ -62,116 +63,239 @@
         <div class="menu-item" onclick="showPage('test-page', 'MRI')">MRI</div>
         <div class="menu-item" onclick="showPage('test-page', 'Pharmacy')">Pharmacy</div>
     </div>
-    <div class="menu-item" onclick="showPage('reports-page')">Reports</div>
 </nav>
 
 <main id="main-content">
-    <!-- Page Content will be injected here via showPage() -->
-    <div id="reg-page" class="page">
-        <h1>Patient Registration</h1>
-        <div class="form-group">
-            <label>First Name</label><input type="text">
+    <!-- REGISTRATION -->
+    <div id="reg-page" class="page active-page">
+        <h1>Registration <button onclick="resetRegForm()" style="float:right; width:auto; background:#eee; color:#333">+</button></h1>
+        <div id="reg-form">
+            <div class="form-group"><label>First Name *</label><input type="text" id="reg-fname" oninput="validateReg()"></div>
+            <div class="form-group"><label>Middle Name</label><input type="text" id="reg-mname"></div>
+            <div class="form-group"><label>Last Name *</label><input type="text" id="reg-lname" oninput="validateReg()"></div>
+            <div class="form-group"><label>ID Number</label><input type="text" id="reg-id"></div>
+            <div class="form-group"><label>DOB</label><input type="date" id="reg-dob" onchange="calcAge()"> Age: <span id="reg-age">0</span></div>
+            
+            <div class="form-group">
+                <label>Insurance Type *</label>
+                <select id="reg-ins-type" onchange="handleInsChange()">
+                    <option value="">Select...</option>
+                    <option value="SHA">SHA</option>
+                    <option value="Insurance">Insurance</option>
+                    <option value="Cash">Cash</option>
+                </select>
+            </div>
+
+            <!-- Conditional Registration Fields -->
+            <div id="field-sha" class="hidden-field"><label>SHA Number</label><input type="text" id="val-sha"></div>
+            <div id="field-ins" class="hidden-field">
+                <label>Company</label>
+                <select id="val-ins-co" onchange="document.getElementById('field-mem').style.display='block'">
+                    <option>Select Company...</option>
+                    <option>CIC</option><option>APA</option><option>JUBILEE</option><option>MADISON</option>
+                </select>
+            </div>
+            <div id="field-mem" class="hidden-field"><label>Membership No</label><input type="text" id="val-mem"></div>
+            <div id="field-cash" class="hidden-field">
+                <label>Payment Method</label>
+                <select id="val-cash-type" onchange="document.getElementById('field-mobile').style.display='block'">
+                    <option>Select...</option>
+                    <option>Mpesa</option><option>Airtel Money</option>
+                </select>
+            </div>
+            <div id="field-mobile" class="hidden-field"><label>Mobile Number</label><input type="text" id="val-mobile"></div>
+
+            <div class="btn-row">
+                <button id="reg-save" class="btn-save" onclick="saveReg()">Save</button>
+                <button id="reg-send" class="btn-send" onclick="sendToTriage()">Send</button>
+            </div>
         </div>
-        <div class="form-group">
-            <label>Middle Name</label><input type="text">
-        </div>
-        <div class="form-group">
-            <label>Last Name</label><input type="text">
-        </div>
-        <div class="form-group">
-            <label>ID Number</label><input type="text">
-        </div>
-        <div class="form-group">
-            <label>Date of Birth</label>
-            <input type="date" id="dob">
-            <p style="background: #eef2f3; padding: 10px; border-radius: 4px; margin-top: 10px;">
-                <strong>Calculated Age:</strong> <span id="display-age">0</span> years
-            </p>
-        </div>
-        <div class="form-group">
-            <label>Insurance Type</label>
-            <select>
-                <option>Insurance</option>
-                <option>SHA</option>
-                <option>Cash</option>
-            </select>
-        </div>
+        <table id="reg-table"><thead><tr><th>ID</th><th>Name</th><th>Age</th><th>Status</th></tr></thead><tbody></tbody></table>
     </div>
 
+    <!-- TRIAGE -->
     <div id="triage-page" class="page">
-        <h1>Triage Unit</h1>
-        <div class="form-group"><label>BP (mmHg)</label><input type="text" placeholder="120/80"></div>
-        <div class="form-group"><label>Temperature (°C)</label><input type="number" placeholder="36.5"></div>
-    </div>
-
-    <div id="doc-page" class="page">
-        <h1>Doctor Consultation</h1>
-        <div class="form-group"><label>Symptoms & Signs</label><textarea rows="5"></textarea></div>
-        <div class="form-group"><label>Prescriptions</label><textarea rows="5"></textarea></div>
-    </div>
-
-    <div id="test-page" class="page">
-        <h1 id="test-title">Test Component</h1>
-        <div class="form-group">
-            <label>Upload Document/Result</label>
-            <input type="file" style="border:none;">
+        <h1>Triage Queue</h1>
+        <table id="triage-table"><thead><tr><th>ID Number</th><th>Name</th><th>Age</th></tr></thead><tbody></tbody></table>
+        
+        <div id="triage-form" style="display:none; margin-top:20px; border-top:2px solid #ddd; padding-top:20px;">
+            <h3>Vital Signs for: <span id="triage-patient-name"></span></h3>
+            <div class="form-group"><label>BP (mmHg) *</label><input type="text" id="tri-bp" oninput="validateTriage()"></div>
+            <div class="form-group"><label>Temperature (°C) *</label><input type="number" id="tri-temp" oninput="validateTriage()"></div>
+            <div class="btn-row">
+                <button id="tri-save" class="btn-save" onclick="saveTriage()">Save</button>
+                <button id="tri-send" class="btn-send" onclick="sendToDoc()">Send</button>
+            </div>
         </div>
+        <table id="triage-sent-table" style="margin-top:40px;"><thead><tr><th>ID</th><th>Name</th><th>Status</th></tr></thead><tbody></tbody></table>
     </div>
 
-    <div id="reports-page" class="page">
-        <h1>System Reports</h1>
-        <p>Real-time analytics and patient reports will appear here.</p>
+    <!-- DOCTOR -->
+    <div id="doc-page" class="page">
+        <h1>Doctor's Consultation</h1>
+        <table id="doc-queue-table"><thead><tr><th>ID Number</th><th>Name</th><th>Age</th></tr></thead><tbody></tbody></table>
+
+        <div id="doc-form" style="display:none; margin-top:20px;">
+            <h3>Patient: <span id="doc-patient-name"></span></h3>
+            <div class="form-group"><label>Symptoms & Signs *</label><textarea id="doc-symp" oninput="validateDoc()"></textarea></div>
+            <div class="form-group">
+                <label>Recommendations</label>
+                <select id="doc-rec">
+                    <option value="">None</option>
+                    <option>Laboratory</option><option>X-ray</option><option>CT Scan</option><option>MRI</option><option>Pharmacy</option>
+                </select>
+            </div>
+            <div class="form-group"><label>Prescriptions *</label><textarea id="doc-presc" oninput="validateDoc()"></textarea></div>
+            <div class="btn-row">
+                <button id="doc-save" class="btn-save enabled" onclick="saveDoc()">Save</button>
+                <button id="doc-send" class="btn-send" onclick="sendDocFinal()">Send</button>
+            </div>
+        </div>
+        <table id="doc-final-table"><thead><tr><th>ID</th><th>Name</th><th>Diagnosis Summary</th></tr></thead><tbody></tbody></table>
     </div>
 </main>
 
 <script>
-    // Ensure the script runs only after the HTML is ready
-    document.addEventListener('DOMContentLoaded', function() {
+    let db = { triage: [], doctor: [] };
+    let currentPatient = null;
+
+    function handleLogin() {
+        document.getElementById('login-overlay').style.display='none';
+        document.getElementById('sidebar').style.display='flex';
+        document.getElementById('main-content').style.display='block';
+    }
+
+    function showPage(id) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+        document.getElementById(id).classList.add('active-page');
+    }
+
+    function toggleSubmenu(id) {
+        const s = document.getElementById(id);
+        s.style.display = s.style.display === 'block' ? 'none' : 'block';
+    }
+
+    // --- REGISTRATION LOGIC ---
+    function handleInsChange() {
+        const val = document.getElementById('reg-ins-type').value;
+        document.querySelectorAll('.hidden-field').forEach(f => f.style.display = 'none');
+        if(val === 'SHA') document.getElementById('field-sha').style.display = 'block';
+        if(val === 'Insurance') document.getElementById('field-ins').style.display = 'block';
+        if(val === 'Cash') document.getElementById('field-cash').style.display = 'block';
+        validateReg();
+    }
+
+    function validateReg() {
+        const fname = document.getElementById('reg-fname').value;
+        const lname = document.getElementById('reg-lname').value;
+        const ins = document.getElementById('reg-ins-type').value;
+        const btn = document.getElementById('reg-save');
+        if(fname && lname && ins) { btn.classList.add('enabled'); } 
+        else { btn.classList.remove('enabled'); }
+    }
+
+    function saveReg() {
+        if(!document.getElementById('reg-save').classList.contains('enabled')) return;
+        document.getElementById('reg-send').classList.add('enabled');
+        alert("Patient Data Saved Locally");
+    }
+
+    function sendToTriage() {
+        if(!document.getElementById('reg-send').classList.contains('enabled')) return;
+        const p = {
+            id: document.getElementById('reg-id').value || 'N/A',
+            name: `${document.getElementById('reg-fname').value} ${document.getElementById('reg-lname').value}`,
+            age: document.getElementById('reg-age').innerText
+        };
+        db.triage.push(p);
+        updateTriageTable();
         
-        // LOGIN HANDLER
-        const loginBtn = document.getElementById('login-btn');
-        loginBtn.addEventListener('click', function() {
-            document.getElementById('login-overlay').style.display = 'none';
-            document.getElementById('sidebar').style.display = 'flex';
-            document.getElementById('main-content').style.display = 'flex';
-            window.showPage('reg-page'); // Load first page
+        // Create table entry in Reg page
+        const row = `<tr><td>${p.id}</td><td>${p.name}</td><td>${p.age}</td><td>Sent to Triage</td></tr>`;
+        document.querySelector('#reg-table tbody').innerHTML += row;
+        alert("Sent to Triage Queue");
+    }
+
+    function resetRegForm() {
+        document.querySelectorAll('#reg-form input').forEach(i => i.value = '');
+        document.getElementById('reg-ins-type').value = '';
+        handleInsChange();
+    }
+
+    function calcAge() {
+        const birth = new Date(document.getElementById('reg-dob').value);
+        const age = new Date().getFullYear() - birth.getFullYear();
+        document.getElementById('reg-age').innerText = isNaN(age) ? 0 : age;
+    }
+
+    // --- TRIAGE LOGIC ---
+    function updateTriageTable() {
+        const tbody = document.querySelector('#triage-table tbody');
+        tbody.innerHTML = '';
+        db.triage.forEach((p, index) => {
+            tbody.innerHTML += `<tr><td>${p.id}</td><td class="active-link" onclick="openTriageForm(${index})">${p.name}</td><td>${p.age}</td></tr>`;
         });
+    }
 
-        // NAVIGATION HANDLER
-        window.showPage = function(pageId, testTitle = '') {
-            const pages = document.querySelectorAll('.page');
-            pages.forEach(p => p.style.display = 'none');
-            
-            const target = document.getElementById(pageId);
-            if (target) {
-                target.style.display = 'block';
-            }
-            
-            if(testTitle) {
-                document.getElementById('test-title').innerText = testTitle;
-            }
-        };
+    function openTriageForm(index) {
+        currentPatient = db.triage[index];
+        document.getElementById('triage-patient-name').innerText = currentPatient.name;
+        document.getElementById('triage-form').style.display = 'block';
+    }
 
-        // SUBMENU TOGGLE
-        window.toggleSubmenu = function(id) {
-            const sub = document.getElementById(id);
-            sub.style.display = sub.style.display === 'block' ? 'none' : 'block';
-        };
+    function validateTriage() {
+        const bp = document.getElementById('tri-bp').value;
+        const temp = document.getElementById('tri-temp').value;
+        const btn = document.getElementById('tri-save');
+        if(bp && temp) btn.classList.add('enabled');
+        else btn.classList.remove('enabled');
+    }
 
-        // AGE CALCULATION
-        const dobInput = document.getElementById('dob');
-        dobInput.addEventListener('change', function() {
-            const birthDate = new Date(this.value);
-            const today = new Date();
-            let age = today.getFullYear() - birthDate.getFullYear();
-            const m = today.getMonth() - birthDate.getMonth();
-            
-            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-                age--;
-            }
-            document.getElementById('display-age').innerText = isNaN(age) ? 0 : age;
+    function saveTriage() {
+        document.getElementById('tri-send').classList.add('enabled');
+    }
+
+    function sendToDoc() {
+        currentPatient.bp = document.getElementById('tri-bp').value;
+        currentPatient.temp = document.getElementById('tri-temp').value;
+        db.doctor.push(currentPatient);
+        
+        const row = `<tr><td>${currentPatient.id}</td><td>${currentPatient.name}</td><td>Read</td></tr>`;
+        document.querySelector('#triage-sent-table tbody').innerHTML += row;
+        
+        updateDocTable();
+        document.getElementById('triage-form').style.display = 'none';
+    }
+
+    // --- DOCTOR LOGIC ---
+    function updateDocTable() {
+        const tbody = document.querySelector('#doc-queue-table tbody');
+        tbody.innerHTML = '';
+        db.doctor.forEach((p, index) => {
+            tbody.innerHTML += `<tr><td>${p.id}</td><td class="active-link" onclick="openDocForm(${index})">${p.name}</td><td>${p.age}</td></tr>`;
         });
-    });
+    }
+
+    function openDocForm(index) {
+        const p = db.doctor[index];
+        currentPatient = p;
+        document.getElementById('doc-patient-name').innerText = p.name;
+        document.getElementById('doc-form').style.display = 'block';
+        alert(`Viewing History:\nID: ${p.id}\nAge: ${p.age}\nBP: ${p.bp}\nTemp: ${p.temp}`);
+    }
+
+    function validateDoc() {
+        const symp = document.getElementById('doc-symp').value;
+        const presc = document.getElementById('doc-presc').value;
+        const btn = document.getElementById('doc-send');
+        if(symp && presc) btn.classList.add('enabled');
+        else btn.classList.remove('enabled');
+    }
+
+    function sendDocFinal() {
+        const row = `<tr><td>${currentPatient.id}</td><td>${currentPatient.name}</td><td>Completed</td></tr>`;
+        document.querySelector('#doc-final-table tbody').innerHTML += row;
+        document.getElementById('doc-form').style.display = 'none';
+    }
 </script>
 </body>
-</html>
