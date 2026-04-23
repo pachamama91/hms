@@ -2,305 +2,256 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chapeco HMS</title>
     <style>
-        :root { --primary: #2c3e50; --secondary: #34495e; --accent: #3498db; --success: #27ae60; --white: #ffffff; }
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; height: 100vh; background: #f4f7f6; overflow: hidden; }
+        :root { --primary: #2c3e50; --accent: #3498db; --success: #27ae60; --bg: #f4f7f6; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--bg); display: flex; height: 100vh; overflow: hidden; }
         
-        /* 1 & 4. Login & Forgot Password */
-        #login-overlay { position: fixed; inset: 0; background: var(--primary); display: flex; justify-content: center; align-items: center; z-index: 2000; }
-        .login-box { background: white; padding: 2.5rem; border-radius: 12px; text-align: center; width: 350px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); }
-        .login-box h1 { color: var(--primary); margin-bottom: 5px; }
-        .login-box p { color: #666; margin-bottom: 25px; }
-        
-        /* 2 & 3. System Name & Logo Placeholder */
-        .logo-text { font-size: 1.5rem; font-weight: bold; color: var(--accent); margin-bottom: 20px; display: block; }
+        /* 1. Login Portal - Fixed & Highest Priority */
+        #login-overlay { 
+            position: fixed; inset: 0; background: var(--primary); 
+            display: flex; justify-content: center; align-items: center; z-index: 10000; 
+        }
+        .login-box { background: white; padding: 3rem; border-radius: 12px; text-align: center; width: 350px; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
 
-        /* 5. Main Layout */
-        #sidebar { width: 240px; background: var(--primary); color: white; display: none; flex-direction: column; height: 100vh; }
-        #main-content { flex-grow: 1; display: none; overflow-y: auto; padding: 30px; height: 100vh; box-sizing: border-box; }
-        
-        .menu-item { padding: 15px 25px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .menu-item:hover { background: var(--secondary); }
+        /* Sidebar & Layout */
+        #sidebar { width: 240px; background: var(--primary); color: white; display: none; flex-direction: column; }
+        #main-content { flex: 1; display: none; overflow-y: auto; padding: 25px; box-sizing: border-box; }
+        .menu-item { padding: 15px 25px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .menu-item:hover { background: #34495e; }
         .submenu { padding-left: 30px; background: #1a252f; display: none; }
 
-        /* General UI */
-        .page { display: none; }
-        .active-page { display: block; }
-        .form-group { margin-bottom: 15px; max-width: 500px; }
-        .hidden-field { display: none; margin-top: 10px; border-left: 3px solid var(--accent); padding-left: 10px; }
+        /* Registration: Horizontal Spread */
+        .form-row { 
+            display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 15px; 
+            background: white; padding: 20px; border-radius: 8px; border: 1px solid #ddd;
+        }
+        .field-group { flex: 1; min-width: 180px; }
+        label { display: block; font-weight: 600; margin-bottom: 5px; font-size: 0.85rem; color: #555; }
+        input, select, textarea { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
         
-        label { display: block; margin-bottom: 5px; font-weight: 600; color: #444; }
-        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        
-        /* Buttons Logic */
-        .btn-row { display: flex; gap: 10px; margin-top: 20px; }
-        button { padding: 12px 20px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .btn-save { background: var(--accent); color: white; opacity: 0.4; cursor: not-allowed; }
-        .btn-send { background: var(--success); color: white; opacity: 0.4; cursor: not-allowed; }
-        .btn-login { background: var(--accent); color: white; width: 100%; font-size: 1rem; }
-        .enabled { opacity: 1 !important; cursor: pointer !important; }
+        /* Buttons */
+        button { padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .btn-save { background: var(--accent); color: white; opacity: 0.4; pointer-events: none; }
+        .btn-send { background: var(--success); color: white; opacity: 0.4; pointer-events: none; }
+        .active { opacity: 1 !important; pointer-events: auto !important; }
 
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; }
-        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
-        th { background: #eee; }
-        .active-link { color: var(--accent); cursor: pointer; text-decoration: underline; font-weight: bold; }
+        /* View-Only Panels */
+        .view-panel { background: #fff9c4; padding: 15px; border: 1px solid #fbc02d; border-radius: 6px; margin-bottom: 15px; font-size: 0.9rem; line-height: 1.6; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; background: white; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        .active-link { color: var(--accent); cursor: pointer; font-weight: bold; text-decoration: underline; }
     </style>
 </head>
 <body>
 
-<!-- 1. LOGIN PORTAL -->
+<!-- Login -->
 <div id="login-overlay">
     <div class="login-box">
-        <div class="logo-text">🏥 CHAPECO HMS</div>
+        <h1 style="margin:0 0 10px 0; color: var(--primary)">Chapeco HMS</h1>
         <p>Hospital Management System</p>
-        <input type="text" placeholder="Username (Optional)" style="margin-bottom:15px">
-        <input type="password" placeholder="Password (Optional)" style="margin-bottom:15px">
-        <button class="btn-login" onclick="bypassLogin()">Login</button>
-        <p style="margin-top:20px; font-size: 0.8rem;">
-            <a href="#" onclick="alert('Contact administrator to reset password')">Forgot Password?</a>
-        </p>
+        <button onclick="doLogin()" style="width:100%; background:var(--accent); color:white; font-size:1rem;">LOGIN</button>
     </div>
 </div>
 
-<!-- 5. LEFT SIDEBAR -->
 <nav id="sidebar">
-    <div style="padding:25px; font-weight:bold; color:var(--accent); font-size: 1.2rem; border-bottom: 1px solid var(--secondary)">Chapeco HMS</div>
-    <div class="menu-item" onclick="showPage('reg-page')">a) Registration</div>
-    <div class="menu-item" onclick="showPage('triage-page')">b) Triage</div>
-    <div class="menu-item" onclick="showPage('doc-page')">c) Doctor</div>
-    <div class="menu-item" onclick="toggleSubmenu('test-sub')">d) Tests ▾</div>
+    <div style="padding:20px; font-weight:bold; color:var(--accent)">CHAPECO HMS</div>
+    <div class="menu-item" onclick="showP('reg-page')">Registration</div>
+    <div class="menu-item" onclick="showP('triage-page')">Triage</div>
+    <div class="menu-item" onclick="showP('doc-page')">Doctor</div>
+    <div class="menu-item" onclick="toggleSub('test-sub')">Tests ▾</div>
     <div id="test-sub" class="submenu">
-        <div class="menu-item" onclick="showPage('test-page', 'Laboratory')">Laboratory</div>
-        <div class="menu-item" onclick="showPage('test-page', 'X-Ray')">X-Ray</div>
-        <div class="menu-item" onclick="showPage('test-page', 'CT Scan')">CT Scan</div>
-        <div class="menu-item" onclick="showPage('test-page', 'MRI')">MRI</div>
-        <div class="menu-item" onclick="showPage('test-page', 'Pharmacy')">Pharmacy</div>
+        <div class="menu-item" onclick="showP('test-page', 'Laboratory')">Laboratory</div>
+        <div class="menu-item" onclick="showP('test-page', 'X-ray')">X-ray</div>
+        <div class="menu-item" onclick="showP('test-page', 'CT Scan')">CT Scan</div>
+        <div class="menu-item" onclick="showP('test-page', 'MRI')">MRI</div>
+        <div class="menu-item" onclick="showP('test-page', 'Pharmacy')">Pharmacy</div>
     </div>
-    <div class="menu-item" onclick="showPage('reports-page')">e) Reports</div>
+    <div class="menu-item" onclick="showP('reports-page')">Reports</div>
 </nav>
 
 <main id="main-content">
-    
-    <!-- REGISTRATION -->
-    <div id="reg-page" class="page active-page">
-        <h1>Registration <button onclick="resetRegForm()" style="float:right; width:auto; background:#ddd; color:#333">+</button></h1>
-        <div class="form-group"><label>First Name *</label><input type="text" id="reg-fname" oninput="validateReg()"></div>
-        <div class="form-group"><label>Middle Name</label><input type="text" id="reg-mname"></div>
-        <div class="form-group"><label>Last Name *</label><input type="text" id="reg-lname" oninput="validateReg()"></div>
-        <div class="form-group"><label>ID Number</label><input type="text" id="reg-id"></div>
-        <div class="form-group"><label>Date of Birth</label><input type="date" id="reg-dob" onchange="calcAge()"> Age: <span id="reg-age" style="font-weight:bold">0</span></div>
-        
-        <div class="form-group">
-            <label>Insurance Type *</label>
-            <select id="reg-ins-type" onchange="handleInsChange()">
-                <option value="">Select...</option>
-                <option value="SHA">SHA</option>
-                <option value="Insurance">Insurance</option>
-                <option value="Cash">Cash</option>
-            </select>
-        </div>
-
-        <div id="field-sha" class="hidden-field"><label>SHA Number</label><input type="text"></div>
-        <div id="field-ins" class="hidden-field">
-            <label>Insurance Company</label>
-            <select onchange="document.getElementById('field-mem').style.display='block'">
-                <option>Select...</option><option>CIC</option><option>APA</option><option>JUBILEE</option><option>MADISON</option>
-            </select>
-        </div>
-        <div id="field-mem" class="hidden-field"><label>Membership No</label><input type="text"></div>
-        <div id="field-cash" class="hidden-field">
-            <label>Cash Method</label>
-            <select onchange="document.getElementById('field-mobile').style.display='block'">
-                <option>Select...</option><option>Mpesa</option><option>Airtel Money</option>
-            </select>
-        </div>
-        <div id="field-mobile" class="hidden-field"><label>Mobile Number</label><input type="text"></div>
-
-        <div class="btn-row">
-            <button id="reg-save" class="btn-save" onclick="saveReg()">Save</button>
-            <button id="reg-send" class="btn-send" onclick="sendToTriage()">Send</button>
-        </div>
-        <table id="reg-table"><thead><tr><th>ID</th><th>Name</th><th>Age</th><th>Status</th></tr></thead><tbody></tbody></table>
-    </div>
-
-    <!-- TRIAGE -->
-    <div id="triage-page" class="page">
-        <h1>Triage Unit</h1>
-        <table id="triage-queue"><thead><tr><th>ID Number</th><th>Name (Click to Triage)</th><th>Age</th></tr></thead><tbody></tbody></table>
-        
-        <div id="triage-form" style="display:none; margin-top:25px; border-top: 2px solid #ddd; padding-top: 20px;">
-            <h3>Vitals: <span id="tri-p-name"></span></h3>
-            <div class="form-group"><label>BP (mmHg) *</label><input type="text" id="tri-bp" oninput="validateTriage()"></div>
-            <div class="form-group"><label>Temperature (°C) *</label><input type="number" id="tri-temp" oninput="validateTriage()"></div>
-            <div class="btn-row">
-                <button id="tri-save" class="btn-save" onclick="saveTriage()">Save</button>
-                <button id="tri-send" class="btn-send" onclick="sendToDoc()">Send</button>
-            </div>
-        </div>
-        <table id="triage-sent-table"><thead><tr><th>ID</th><th>Name</th><th>Status</th></tr></thead><tbody></tbody></table>
-    </div>
-
-    <!-- DOCTOR -->
-    <div id="doc-page" class="page">
-        <h1>Doctor Consultation</h1>
-        <table id="doc-queue"><thead><tr><th>ID</th><th>Patient Name</th><th>Age</th></tr></thead><tbody></tbody></table>
-
-        <div id="doc-form" style="display:none; margin-top:20px;">
-            <h3>Consulting: <span id="doc-p-name"></span></h3>
-            <div class="form-group"><label>Symptoms & Signs *</label><textarea id="doc-symp" oninput="validateDoc()"></textarea></div>
-            <div class="form-group">
-                <label>Recommendations</label>
-                <select id="doc-rec">
-                    <option value="">None</option><option>Laboratory</option><option>X-ray</option><option>CT Scan</option><option>MRI</option><option>Pharmacy</option>
+    <!-- Registration -->
+    <div id="reg-page" class="page" style="display:block">
+        <h2>Patient Registration <button onclick="location.reload()" style="float:right; background:#eee; font-size:0.8rem; color:#333">New +</button></h2>
+        <div class="form-row">
+            <div class="field-group"><label>First Name *</label><input type="text" id="fn" oninput="valReg()"></div>
+            <div class="field-group"><label>Middle Name</label><input type="text" id="mn"></div>
+            <div class="field-group"><label>Last Name *</label><input type="text" id="ln" oninput="valReg()"></div>
+            <div class="field-group"><label>ID Number</label><input type="text" id="rid"></div>
+            <div class="field-group"><label>DOB</label><input type="date" id="dob" onchange="ageCalc()"></div>
+            <div class="field-group"><label>Age</label><input type="text" id="age" readonly></div>
+            <div class="field-group">
+                <label>Insurance *</label>
+                <select id="ins" onchange="valReg()">
+                    <option value="">Select...</option><option>SHA</option><option>Insurance</option><option>Cash</option>
                 </select>
             </div>
-            <div class="form-group"><label>Prescriptions *</label><textarea id="doc-presc" oninput="validateDoc()"></textarea></div>
-            <div class="btn-row">
-                <button id="doc-save" class="btn-save enabled" onclick="alert('Note Saved')">Save</button>
-                <button id="doc-send" class="btn-send" onclick="finishDoc()">Send</button>
-            </div>
         </div>
-        <table id="doc-final-table"><thead><tr><th>ID</th><th>Name</th><th>Summary</th></tr></thead><tbody></tbody></table>
+        <button id="reg-save" class="btn-save" onclick="this.nextElementSibling.classList.add('active')">Save</button>
+        <button id="reg-send" class="btn-send" onclick="sendToTri()">Send</button>
     </div>
 
-    <div id="test-page" class="page">
-        <h1 id="test-title">Test</h1>
-        <input type="file">
+    <!-- Triage (View Registration Only) -->
+    <div id="triage-page" class="page" style="display:none">
+        <h2>Triage Queue</h2>
+        <table id="tri-table"><thead><tr><th>ID</th><th>Name</th><th>Age</th></tr></thead><tbody></tbody></table>
+        <div id="tri-form" style="display:none; margin-top:20px">
+            <div class="view-panel" id="tri-reg-view"></div>
+            <div class="form-row">
+                <div class="field-group"><label>BP *</label><input type="text" id="bp" oninput="valTri()"></div>
+                <div class="field-group"><label>Temperature *</label><input type="number" id="temp" oninput="valTri()"></div>
+            </div>
+            <button id="tri-save" class="btn-save" onclick="this.nextElementSibling.classList.add('active')">Save</button>
+            <button id="tri-send" class="btn-send" onclick="sendToDoc()">Send</button>
+        </div>
     </div>
 
+    <!-- Doctor (View Reg & Triage Only) -->
+    <div id="doc-page" class="page" style="display:none">
+        <h2>Consultation List</h2>
+        <table id="doc-table"><thead><tr><th>ID</th><th>Name</th></tr></thead><tbody></tbody></table>
+        <div id="doc-form" style="display:none; margin-top:20px">
+            <div class="view-panel" id="doc-history-view"></div>
+            <div class="form-row">
+                <div class="field-group"><label>Symptoms *</label><textarea id="sym" oninput="valDoc()"></textarea></div>
+                <div class="field-group">
+                    <label>Recommendations</label>
+                    <select id="rec">
+                        <option value="">Select...</option><option>Laboratory</option><option>X-ray</option><option>CT Scan</option><option>MRI</option><option>Pharmacy</option>
+                    </select>
+                </div>
+                <div class="field-group"><label>Prescriptions *</label><textarea id="pre" oninput="valDoc()"></textarea></div>
+            </div>
+            <button id="doc-save" class="active" style="background:var(--accent); color:white" onclick="doDocSave()">Save</button>
+            <button id="doc-send" class="btn-send" onclick="doDocSend()">Send</button>
+        </div>
+    </div>
+
+    <!-- Tests (Receives Prescriptions) -->
+    <div id="test-page" class="page" style="display:none">
+        <h2 id="test-title">Tests</h2>
+        <div class="view-panel" id="test-note-view">No pending prescriptions.</div>
+        <div class="form-row">
+            <div class="field-group"><label>Upload Document/Result</label><input type="file"></div>
+        </div>
+        <button class="active" style="background:var(--success); color:white">Submit Results</button>
+    </div>
 </main>
 
 <script>
     let patients = [];
-    let activeIdx = null;
+    let cur = null;
 
-    function bypassLogin() {
-        document.getElementById('login-overlay').style.display='none';
-        document.getElementById('sidebar').style.display='flex';
-        document.getElementById('main-content').style.display='block';
+    function doLogin() { 
+        document.getElementById('login-overlay').style.display = 'none'; 
+        document.getElementById('sidebar').style.display = 'flex';
+        document.getElementById('main-content').style.display = 'block';
     }
 
-    function showPage(id, title='') {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
-        document.getElementById(id).classList.add('active-page');
-        if(title) document.getElementById('test-title').innerText = title;
+    function showP(id, t='') {
+        document.querySelectorAll('.page').forEach(p => p.style.display='none');
+        document.getElementById(id).style.display='block';
+        if(t) {
+            document.getElementById('test-title').innerText = t;
+            const pNote = patients.find(p => p.rec === t);
+            document.getElementById('test-note-view').innerText = pNote ? `Prescription Note: ${pNote.pre}` : "No specific data for this section.";
+        }
     }
 
-    function toggleSubmenu(id) {
+    function toggleSub(id) { 
         const s = document.getElementById(id);
         s.style.display = s.style.display === 'block' ? 'none' : 'block';
     }
 
-    // REGISTRATION LOGIC
-    function handleInsChange() {
-        const val = document.getElementById('reg-ins-type').value;
-        document.querySelectorAll('.hidden-field').forEach(f => f.style.display = 'none');
-        if(val === 'SHA') document.getElementById('field-sha').style.display = 'block';
-        if(val === 'Insurance') document.getElementById('field-ins').style.display = 'block';
-        if(val === 'Cash') document.getElementById('field-cash').style.display = 'block';
-        validateReg();
+    // REGISTRATION
+    function ageCalc() {
+        let b = new Date(document.getElementById('dob').value);
+        document.getElementById('age').value = new Date().getFullYear() - b.getFullYear();
+        valReg();
     }
 
-    function validateReg() {
-        const f = document.getElementById('reg-fname').value;
-        const l = document.getElementById('reg-lname').value;
-        const i = document.getElementById('reg-ins-type').value;
-        document.getElementById('reg-save').className = (f && l && i) ? 'btn-save enabled' : 'btn-save';
+    function valReg() {
+        let ok = document.getElementById('fn').value && document.getElementById('ln').value && document.getElementById('ins').value;
+        document.getElementById('reg-save').classList.toggle('active', ok);
     }
 
-    function saveReg() {
-        if(document.getElementById('reg-save').classList.contains('enabled')) {
-            document.getElementById('reg-send').classList.add('enabled');
-        }
-    }
-
-    function sendToTriage() {
-        const p = {
-            id: document.getElementById('reg-id').value || 'N/A',
-            name: document.getElementById('reg-fname').value + ' ' + document.getElementById('reg-lname').value,
-            age: document.getElementById('reg-age').innerText
+    function sendToTri() {
+        let p = { 
+            id: document.getElementById('rid').value || 'N/A', 
+            name: `${document.getElementById('fn').value} ${document.getElementById('ln').value}`, 
+            age: document.getElementById('age').value,
+            ins: document.getElementById('ins').value
         };
         patients.push(p);
-        document.querySelector('#reg-table tbody').innerHTML += `<tr><td>${p.id}</td><td>${p.name}</td><td>${p.age}</td><td>Sent</td></tr>`;
-        updateTriageTable();
-        alert('Patient sent to Triage');
+        updateTriTbl();
+        alert("Patient Sent to Triage");
     }
 
-    function calcAge() {
-        const dob = new Date(document.getElementById('reg-dob').value);
-        const age = new Date().getFullYear() - dob.getFullYear();
-        document.getElementById('reg-age').innerText = isNaN(age) ? 0 : age;
-    }
-
-    function resetRegForm() {
-        document.querySelectorAll('input').forEach(i => i.value='');
-        document.getElementById('reg-ins-type').value='';
-        handleInsChange();
-    }
-
-    // TRIAGE LOGIC
-    function updateTriageTable() {
-        const body = document.querySelector('#triage-queue tbody');
-        body.innerHTML = '';
-        patients.forEach((p, idx) => {
-            body.innerHTML += `<tr><td>${p.id}</td><td class="active-link" onclick="openTriage(${idx})">${p.name}</td><td>${p.age}</td></tr>`;
+    function updateTriTbl() {
+        let b = document.querySelector('#tri-table tbody');
+        b.innerHTML = '';
+        patients.forEach((p, i) => {
+            if(!p.bp) b.innerHTML += `<tr><td>${p.id}</td><td class="active-link" onclick="openTri(${i})">${p.name}</td><td>${p.age}</td></tr>`;
         });
     }
 
-    function openTriage(idx) {
-        activeIdx = idx;
-        document.getElementById('tri-p-name').innerText = patients[idx].name;
-        document.getElementById('triage-form').style.display = 'block';
+    // TRIAGE (View Mode Only)
+    function openTri(i) {
+        cur = patients[i];
+        document.getElementById('tri-reg-view').innerHTML = `<strong>Bio Data (View Only):</strong> ID: ${cur.id} | Name: ${cur.name} | Age: ${cur.age} | Insurance: ${cur.ins}`;
+        document.getElementById('tri-form').style.display = 'block';
     }
 
-    function validateTriage() {
-        const bp = document.getElementById('tri-bp').value;
-        const temp = document.getElementById('tri-temp').value;
-        document.getElementById('tri-save').className = (bp && temp) ? 'btn-save enabled' : 'btn-save';
-    }
-
-    function saveTriage() {
-        document.getElementById('tri-send').classList.add('enabled');
+    function valTri() {
+        let ok = document.getElementById('bp').value && document.getElementById('temp').value;
+        document.getElementById('tri-save').classList.toggle('active', ok);
     }
 
     function sendToDoc() {
-        const p = patients[activeIdx];
-        p.bp = document.getElementById('tri-bp').value;
-        p.temp = document.getElementById('tri-temp').value;
-        document.querySelector('#triage-sent-table tbody').innerHTML += `<tr><td>${p.id}</td><td>${p.name}</td><td>Read</td></tr>`;
-        updateDocQueue();
-        document.getElementById('triage-form').style.display = 'none';
+        cur.bp = document.getElementById('bp').value;
+        cur.temp = document.getElementById('temp').value;
+        updateDocTbl();
+        document.getElementById('tri-form').style.display = 'none';
+        alert("Sent to Doctor");
     }
 
-    // DOCTOR LOGIC
-    function updateDocQueue() {
-        const body = document.querySelector('#doc-queue tbody');
-        body.innerHTML = '';
-        patients.filter(p => p.bp).forEach((p, idx) => {
-            body.innerHTML += `<tr><td>${p.id}</td><td class="active-link" onclick="openDoc(${idx})">${p.name}</td><td>${p.age}</td></tr>`;
+    // DOCTOR (View Reg & Triage Only)
+    function updateDocTbl() {
+        let b = document.querySelector('#doc-table tbody');
+        b.innerHTML = '';
+        patients.forEach((p, i) => {
+            if(p.bp && !p.pre) b.innerHTML += `<tr><td>${p.id}</td><td class="active-link" onclick="openDoc(${i})">${p.name}</td></tr>`;
         });
     }
 
-    function openDoc(idx) {
-        activeIdx = idx;
-        const p = patients[idx];
-        document.getElementById('doc-p-name').innerText = p.name;
+    function openDoc(i) {
+        cur = patients[i];
+        document.getElementById('doc-history-view').innerHTML = `
+            <strong>History (View Only):</strong><br>
+            Name: ${cur.name} | ID: ${cur.id} | Age: ${cur.age}<br>
+            Vitals: BP ${cur.bp} | Temp ${cur.temp} | Ins: ${cur.ins}`;
         document.getElementById('doc-form').style.display = 'block';
-        alert(`Patient Data:\nID: ${p.id}\nAge: ${p.age}\nBP: ${p.bp}\nTemp: ${p.temp}`);
     }
 
-    function validateDoc() {
-        const s = document.getElementById('doc-symp').value;
-        const pr = document.getElementById('doc-presc').value;
-        document.getElementById('doc-send').className = (s && pr) ? 'btn-send enabled' : 'btn-send';
+    function valDoc() {
+        let ok = document.getElementById('sym').value && document.getElementById('pre').value;
+        // Save is always active per request, but send follows save.
     }
 
-    function finishDoc() {
-        const p = patients[activeIdx];
-        document.querySelector('#doc-final-table tbody').innerHTML += `<tr><td>${p.id}</td><td>${p.name}</td><td>Completed</td></tr>`;
+    function doDocSave() {
+        cur.sym = document.getElementById('sym').value;
+        cur.pre = document.getElementById('pre').value;
+        cur.rec = document.getElementById('rec').value;
+        document.getElementById('doc-send').classList.add('active');
+        alert("Clinical Record Saved");
+    }
+
+    function doDocSend() {
+        alert(`Record submitted to ${cur.rec || 'General Records'}`);
         document.getElementById('doc-form').style.display = 'none';
+        updateDocTbl();
     }
 </script>
 </body>
