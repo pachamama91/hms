@@ -6,51 +6,51 @@
     <title>Chapeco HMS</title>
     <style>
         :root { --primary: #2c3e50; --secondary: #34495e; --accent: #3498db; --white: #ffffff; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; display: flex; height: 100vh; background: #f4f7f6; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; display: flex; height: 100vh; background: #f4f7f6; overflow: hidden; }
         
         /* Login Overlay */
         #login-overlay { position: fixed; inset: 0; background: var(--primary); display: flex; justify-content: center; align-items: center; z-index: 1000; }
-        .login-box { background: white; padding: 2rem; border-radius: 8px; text-align: center; width: 300px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .login-box { background: white; padding: 2.5rem; border-radius: 12px; text-align: center; width: 320px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); }
         
         /* Layout */
-        #sidebar { width: 220px; background: var(--primary); color: white; display: none; flex-direction: column; }
-        #main-content { flex-grow: 1; display: none; flex-direction: column; overflow-y: auto; }
+        #sidebar { width: 240px; background: var(--primary); color: white; display: none; flex-direction: column; height: 100vh; }
+        #main-content { flex-grow: 1; display: none; flex-direction: column; overflow-y: auto; height: 100vh; }
         
         /* Sidebar Menu */
-        .logo-area { padding: 20px; text-align: center; border-bottom: 1px solid var(--secondary); }
-        .logo-placeholder { font-weight: bold; font-size: 1.2rem; color: var(--accent); }
-        .menu-item { padding: 15px 20px; cursor: pointer; border-bottom: 1px solid #3e4f5f; transition: 0.3s; }
+        .logo-area { padding: 25px; text-align: center; border-bottom: 1px solid var(--secondary); font-weight: bold; font-size: 1.3rem; color: var(--accent); }
+        .menu-item { padding: 15px 25px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.2s; }
         .menu-item:hover { background: var(--secondary); }
-        .submenu { padding-left: 35px; font-size: 0.9rem; background: #243342; display: none; }
+        .submenu { padding-left: 40px; font-size: 0.9rem; background: #1a252f; display: none; }
 
-        /* Forms & Tables */
-        .page { padding: 30px; display: none; }
+        /* Content Styles */
+        .page { padding: 40px; display: none; }
         .active-page { display: block; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; }
-        input, select, textarea { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
-        button { background: var(--accent); color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; }
+        .form-group { margin-bottom: 20px; max-width: 500px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--primary); }
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 1rem; }
+        button { background: var(--accent); color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; }
+        button:hover { opacity: 0.9; }
     </style>
 </head>
 <body>
 
-<!-- 1 & 4: Login & Forgot Password -->
+<!-- Login Section -->
 <div id="login-overlay">
     <div class="login-box">
-        <div class="logo-placeholder">🏥 Chapeco HMS</div>
-        <h3>Login</h3>
-        <input type="text" placeholder="Username (Optional)"><br><br>
-        <input type="password" placeholder="Password (Optional)"><br><br>
-        <button onclick="handleLogin()">Login</button>
-        <p><a href="#" onclick="alert('Contact Admin to reset password')">Forgot Password?</a></p>
+        <div style="font-size: 2.5rem; margin-bottom: 10px;">🏥</div>
+        <h2 style="margin: 0 0 20px 0; color: var(--primary);">Chapeco HMS</h2>
+        <input type="text" placeholder="Username (Optional)" style="margin-bottom: 15px;">
+        <input type="password" placeholder="Password (Optional)" style="margin-bottom: 20px;">
+        <button id="login-btn">Login</button>
+        <p style="margin-top: 20px; font-size: 0.9rem;">
+            <a href="#" onclick="alert('Please contact IT Support at support@chapecohms.com')">Forgot Password?</a>
+        </p>
     </div>
 </div>
 
-<!-- 5: Sidebar Navigation -->
+<!-- Main System Layout -->
 <nav id="sidebar">
-    <div class="logo-area">
-        <div class="logo-placeholder">CHAPECO HMS</div>
-    </div>
+    <div class="logo-area">CHAPECO HMS</div>
     <div class="menu-item" onclick="showPage('reg-page')">Registration</div>
     <div class="menu-item" onclick="showPage('triage-page')">Triage</div>
     <div class="menu-item" onclick="showPage('doc-page')">Doctor</div>
@@ -65,22 +65,28 @@
     <div class="menu-item" onclick="showPage('reports-page')">Reports</div>
 </nav>
 
-<!-- Main Content Area -->
 <main id="main-content">
-    
-    <!-- Registration Page -->
+    <!-- Page Content will be injected here via showPage() -->
     <div id="reg-page" class="page">
-        <h2>Patient Registration</h2>
+        <h1>Patient Registration</h1>
         <div class="form-group">
             <label>First Name</label><input type="text">
+        </div>
+        <div class="form-group">
             <label>Middle Name</label><input type="text">
+        </div>
+        <div class="form-group">
             <label>Last Name</label><input type="text">
+        </div>
+        <div class="form-group">
             <label>ID Number</label><input type="text">
         </div>
         <div class="form-group">
             <label>Date of Birth</label>
-            <input type="date" id="dob" onchange="calculateAge()">
-            <p>Calculated Age: <span id="display-age">0</span> years</p>
+            <input type="date" id="dob">
+            <p style="background: #eef2f3; padding: 10px; border-radius: 4px; margin-top: 10px;">
+                <strong>Calculated Age:</strong> <span id="display-age">0</span> years
+            </p>
         </div>
         <div class="form-group">
             <label>Insurance Type</label>
@@ -92,32 +98,80 @@
         </div>
     </div>
 
-    <!-- Triage Page -->
     <div id="triage-page" class="page">
-        <h2>Triage Unit</h2>
-        <label>BP (mmHg)</label><input type="text" placeholder="120/80">
-        <label>Temperature (°C)</label><input type="number" placeholder="36.5">
+        <h1>Triage Unit</h1>
+        <div class="form-group"><label>BP (mmHg)</label><input type="text" placeholder="120/80"></div>
+        <div class="form-group"><label>Temperature (°C)</label><input type="number" placeholder="36.5"></div>
     </div>
 
-    <!-- Doctor Page -->
     <div id="doc-page" class="page">
-        <h2>Consultation</h2>
-        <label>Symptoms & Signs</label>
-        <textarea rows="4"></textarea>
-        <label>Prescriptions</label>
-        <textarea rows="4"></textarea>
+        <h1>Doctor Consultation</h1>
+        <div class="form-group"><label>Symptoms & Signs</label><textarea rows="5"></textarea></div>
+        <div class="form-group"><label>Prescriptions</label><textarea rows="5"></textarea></div>
     </div>
 
-    <!-- Generic Test Upload Page -->
     <div id="test-page" class="page">
-        <h2 id="test-title">Test Component</h2>
-        <label>Upload Document/Result</label>
-        <input type="file">
+        <h1 id="test-title">Test Component</h1>
+        <div class="form-group">
+            <label>Upload Document/Result</label>
+            <input type="file" style="border:none;">
+        </div>
     </div>
 
     <div id="reports-page" class="page">
-        <h2>System Reports</h2>
-        <p>No reports generated for today.</p>
+        <h1>System Reports</h1>
+        <p>Real-time analytics and patient reports will appear here.</p>
     </div>
-
 </main>
+
+<script>
+    // Ensure the script runs only after the HTML is ready
+    document.addEventListener('DOMContentLoaded', function() {
+        
+        // LOGIN HANDLER
+        const loginBtn = document.getElementById('login-btn');
+        loginBtn.addEventListener('click', function() {
+            document.getElementById('login-overlay').style.display = 'none';
+            document.getElementById('sidebar').style.display = 'flex';
+            document.getElementById('main-content').style.display = 'flex';
+            window.showPage('reg-page'); // Load first page
+        });
+
+        // NAVIGATION HANDLER
+        window.showPage = function(pageId, testTitle = '') {
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(p => p.style.display = 'none');
+            
+            const target = document.getElementById(pageId);
+            if (target) {
+                target.style.display = 'block';
+            }
+            
+            if(testTitle) {
+                document.getElementById('test-title').innerText = testTitle;
+            }
+        };
+
+        // SUBMENU TOGGLE
+        window.toggleSubmenu = function(id) {
+            const sub = document.getElementById(id);
+            sub.style.display = sub.style.display === 'block' ? 'none' : 'block';
+        };
+
+        // AGE CALCULATION
+        const dobInput = document.getElementById('dob');
+        dobInput.addEventListener('change', function() {
+            const birthDate = new Date(this.value);
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const m = today.getMonth() - birthDate.getMonth();
+            
+            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            document.getElementById('display-age').innerText = isNaN(age) ? 0 : age;
+        });
+    });
+</script>
+</body>
+</html>
