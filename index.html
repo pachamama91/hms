@@ -74,7 +74,7 @@
         <div id="reg-form" class="form-row">
             <div class="field-group"><label>First Name *</label><input type="text" id="fn"></div>
             <div class="field-group"><label>Last Name </label><input type="text" id="fn"></div>
-            <div class="field-group"><label>Last Name *</label><input type="text" id="ln"></div>
+            <div class="field-group"><label>Middle Name *</label><input type="text" id="ln"></div>
             <div class="field-group"><label>ID Number</label><input type="text" id="rid"></div>
             <div class="field-group"><label>DOB</label><input type="date" id="dob" onchange="ageCalc()"></div>
             <div class="field-group"><label>Age</label><input type="text" id="age" readonly style="background:#f0f0f0"></div>
@@ -98,6 +98,7 @@
             </div>
             <div class="field-group" id="box-mem" style="display:none"><label>Membership No</label><input type="text" id="v-mem"></div>
             <div class="field-group" id="box-sha" style="display:none"><label>SHA Number</label><input type="text" id="v-sha"></div>
+            <div class="field-group" id="box-card" style="display:none"><label>Card Number</label><input type="text" id="v-card"></div>
             <div class="field-group" id="box-cash" style="display:none">
                 <label>Mobile Provider</label>
                 <select id="v-cash" onchange="document.getElementById('box-mob').style.display='block'">
