@@ -72,6 +72,7 @@
         <h2>Registration <button onclick="resetReg()" style="float:right">+</button></h2>
         <div id="reg-form" class="form-row">
             <div class="field-group"><label>First Name *</label><input type="text" id="fn"></div>
+            <div class="field-group"><label>Last Name </label><input type="text" id="fn"></div>
             <div class="field-group"><label>Last Name *</label><input type="text" id="ln"></div>
             <div class="field-group"><label>ID Number</label><input type="text" id="rid"></div>
             <div class="field-group"><label>DOB</label><input type="date" id="dob" onchange="ageCalc()"></div>
