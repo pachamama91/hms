@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -72,19 +73,17 @@
         <h2>Registration <button onclick="resetReg()" style="float:right">+</button></h2>
         <div id="reg-form" class="form-row">
             <div class="field-group"><label>First Name *</label><input type="text" id="fn"></div>
-            <div class="field-group"><label>Last Name </label><input type="text" id="fn"></div>
             <div class="field-group"><label>Last Name *</label><input type="text" id="ln"></div>
             <div class="field-group"><label>ID Number</label><input type="text" id="rid"></div>
             <div class="field-group"><label>DOB</label><input type="date" id="dob" onchange="ageCalc()"></div>
             <div class="field-group"><label>Age</label><input type="text" id="age" readonly style="background:#f0f0f0"></div>
             <div class="field-group">
-                <label>Payment Type *</label>
+                <label>Insurance Type *</label>
                 <select id="ins" onchange="handlePaymentFlow()">
                     <option value="">Select...</option>
                     <option value="SHA">SHA</option>
                     <option value="Insurance">Insurance</option>
                     <option value="Cash">Cash</option>
-                    <option value="Card">Card</option>
                 </select>
             </div>
             
@@ -92,7 +91,7 @@
                 <label>Company</label>
                 <select id="v-co" onchange="document.getElementById('box-mem').style.display='block'">
                     <option value="">Select Company...</option>
-                    <option>CIC</option><option>APA</option><option>JUBILEE</option><option>MADISON</option><option>KOLO</option>
+                    <option>CIC</option><option>APA</option><option>JUBILEE</option><option>MADISON</option>
                 </select>
             </div>
             <div class="field-group" id="box-mem" style="display:none"><label>Membership No</label><input type="text" id="v-mem"></div>
